@@ -1,0 +1,110 @@
+// ─── FormTrack SCSS mixins ───────────────────────────────────
+//
+// IMPORTANT: every file that references tokens (`$s-2`, `$color-accent`,
+// `$font-display`, etc.) must `@use "_tokens" as *;` itself — Sass
+// resolves variables in a mixin body using the scope of the file that
+// DEFINED the mixin, not the file that includes it. The `prependData`
+// in next.config.ts handles leaf stylesheets, but partials that get
+// `@use`-d also need their own explicit `@use "_tokens"` so their
+// mixin / function bodies can see the tokens.
+
+@use "_tokens" as *;
+
+@mixin card {
+  background: var(--bg-raised);
+  border: 1px solid var(--line);
+  border-radius: $radius-xl;
+  box-shadow: var(--shadow-card);
+  padding: $s-6;
+  transition: border-color $t-base $ease, transform $t-base $ease;
+}
+
+@mixin card-glow {
+  @include card;
+  box-shadow: var(--shadow-glow);
+  border-color: $color-accent-line;
+}
+
+@mixin pill-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: $s-2;
+  padding: $s-3 $s-5;
+  border-radius: $radius-pill;
+  border: 1.5px solid var(--line-strong);
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-weight: $fw-semibold;
+  font-size: $fs-sm;
+  cursor: pointer;
+  transition: border-color $t-base $ease, background $t-base $ease, transform $t-base $ease;
+
+  &:hover {
+    border-color: $color-accent;
+    background: var(--accent-soft);
+  }
+
+  &:focus-visible {
+    outline: none;
+    border-color: $color-accent;
+    box-shadow: 0 0 0 3px var(--accent-soft);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+@mixin display-number {
+  font-family: $font-display;
+  font-weight: $fw-black;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+@mixin shimmer {
+  position: relative;
+  overflow: hidden;
+  background: var(--bg-inset);
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.04) 50%,
+      transparent 100%
+    );
+    animation: shimmer 1.4s infinite;
+  }
+
+  @keyframes shimmer {
+    from { transform: translateX(-100%); }
+    to   { transform: translateX(100%); }
+  }
+}
+
+@mixin focus-ring {
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px var(--accent-soft);
+    border-color: $color-accent;
+  }
+}
+
+@mixin sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

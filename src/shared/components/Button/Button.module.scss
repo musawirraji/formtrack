@@ -1,0 +1,66 @@
+.btn {
+  @include pill-button;
+
+  &:disabled {
+    pointer-events: none;
+  }
+}
+
+.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  svg {
+    width: 1em;
+    height: 1em;
+  }
+}
+
+.label {
+  display: inline-flex;
+  align-items: center;
+}
+
+// ─── Variants ─────────────────────────────────────────────
+.v-primary {
+  background: $color-accent;
+  color: #0B0B12;
+  border-color: $color-accent;
+
+  &:hover {
+    background: $color-accent-hi;
+    border-color: $color-accent-hi;
+    transform: translateY(-1px);
+  }
+}
+
+.v-ghost {
+  background: transparent;
+  border-color: var(--line-strong);
+}
+
+.v-outline {
+  background: var(--bg-inset);
+  border-color: var(--line);
+}
+
+// ─── Sizes ────────────────────────────────────────────────
+.s-sm {
+  padding: $s-2 $s-4;
+  font-size: $fs-xs;
+}
+
+.s-md {
+  padding: $s-3 $s-5;
+  font-size: $fs-sm;
+}
+
+.s-lg {
+  padding: $s-4 $s-6;
+  font-size: $fs-md;
+}
+
+.full {
+  width: 100%;
+}

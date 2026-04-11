@@ -1,0 +1,234 @@
+.preview {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-5);
+  padding: var(--s-8);
+  background: var(--color-bg-raised);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-xl);
+  min-width: 0;
+  box-shadow:
+    0 0 0 1px rgba(124, 107, 255, 0.06),
+    0 30px 60px -40px rgba(124, 107, 255, 0.25);
+}
+
+.previewHeader {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+}
+
+.eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-ink-3);
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--color-ink);
+  margin: 0;
+}
+
+.empty {
+  padding: var(--s-10) var(--s-5);
+  text-align: center;
+  border: 1px dashed var(--color-line);
+  border-radius: var(--radius-md);
+}
+
+.emptyTitle {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-ink);
+  margin: 0 0 4px 0;
+}
+
+.emptyBody {
+  font-size: 13px;
+  color: var(--color-ink-3);
+  margin: 0;
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+}
+
+.row {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--s-3);
+  padding: var(--s-4);
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  position: relative;
+  transition:
+    border-color var(--motion),
+    box-shadow var(--motion),
+    transform var(--motion);
+
+  &:hover {
+    border-color: var(--color-line-strong);
+  }
+
+  &:focus-visible {
+    outline: none;
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 4px rgba(124, 107, 255, 0.18);
+  }
+}
+
+.rowSelected {
+  border-color: var(--color-accent);
+  box-shadow:
+    0 0 0 1px rgba(124, 107, 255, 0.3),
+    0 20px 40px -24px rgba(124, 107, 255, 0.4);
+}
+
+.rowDropTarget {
+  border-color: var(--color-accent);
+  transform: translateY(-1px);
+}
+
+.handle {
+  color: var(--color-ink-3);
+  cursor: grab;
+  font-size: 16px;
+  line-height: 1;
+  padding-top: 4px;
+  user-select: none;
+
+  &:active {
+    cursor: grabbing;
+  }
+}
+
+.rowBody {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+  min-width: 0;
+}
+
+.fieldLabel {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-ink);
+}
+
+.required {
+  color: var(--color-neg);
+  margin-left: 4px;
+}
+
+.input {
+  width: 100%;
+  padding: 10px var(--s-3);
+  background: var(--color-bg-inset);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-ui);
+  font-size: 14px;
+  color: var(--color-ink);
+  pointer-events: none;
+
+  &::placeholder {
+    color: var(--color-ink-3);
+  }
+}
+
+.help {
+  font-size: 12px;
+  color: var(--color-ink-3);
+}
+
+.optionList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+}
+
+.option {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  font-size: 13px;
+  color: var(--color-ink-2);
+}
+
+.fileDrop {
+  padding: var(--s-4);
+  border: 1px dashed var(--color-line);
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  color: var(--color-ink-3);
+  text-align: center;
+}
+
+.rowActions {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  flex-shrink: 0;
+}
+
+.badge {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--color-ink-3);
+  background: var(--color-bg-inset);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-pill);
+  padding: 2px 8px;
+  min-width: 28px;
+  text-align: center;
+}
+
+.deleteBtn {
+  background: transparent;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-pill);
+  color: var(--color-ink-3);
+  width: 24px;
+  height: 24px;
+  font-size: 14px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition:
+    color var(--motion),
+    border-color var(--motion);
+
+  &:hover {
+    color: var(--color-neg);
+    border-color: var(--color-neg);
+  }
+}
+
+.submit {
+  align-self: flex-start;
+  padding: 12px var(--s-6);
+  background: var(--color-accent);
+  color: var(--color-bg);
+  border: 0;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-ui);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: default;
+  box-shadow: 0 20px 40px -20px rgba(124, 107, 255, 0.5);
+}

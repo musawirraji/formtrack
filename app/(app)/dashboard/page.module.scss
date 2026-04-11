@@ -1,0 +1,127 @@
+.wrap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-8);
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--s-6);
+  flex-wrap: wrap;
+}
+
+.eyebrow {
+  font-size: 13px;
+  color: var(--color-ink-3);
+  margin: 0 0 var(--s-2) 0;
+  letter-spacing: 0.01em;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--color-ink);
+  margin: 0;
+
+  em {
+    font-style: normal;
+    background: linear-gradient(120deg, #9484ff 0%, #6ee7a0 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+}
+
+.headerActions {
+  display: flex;
+  gap: var(--s-3);
+}
+
+.hero {
+  padding: var(--s-8);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-6);
+}
+
+.heroTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-4);
+}
+
+.heroRange {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--color-ink-3);
+  letter-spacing: 0.02em;
+}
+
+.heroNumber {
+  display: flex;
+  align-items: baseline;
+  gap: var(--s-6);
+
+  span:first-child {
+    font-family: var(--font-display);
+    font-size: 96px;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    line-height: 0.9;
+    color: var(--color-ink);
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+.heroDelta {
+  font-size: 14px;
+  color: var(--color-ink-2);
+}
+
+.heroFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: var(--s-4);
+  border-top: 1px solid var(--color-line);
+  font-size: 13px;
+}
+
+.heroFooterLabel {
+  color: var(--color-ink-3);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 11px;
+}
+
+.heroFooterValue {
+  color: var(--color-ink-2);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--s-5);
+}
+
+.cardTitle {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-ink);
+  margin: 0 0 var(--s-3) 0;
+}
+
+.cardEmpty {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--color-ink-3);
+  margin: 0;
+}

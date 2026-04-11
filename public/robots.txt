@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /dashboard
+Disallow: /forms
+Disallow: /leads
+Disallow: /billing
+Disallow: /settings

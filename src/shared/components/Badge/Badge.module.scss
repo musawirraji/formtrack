@@ -1,0 +1,42 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: $s-1;
+  padding: 3px $s-3;
+  border-radius: $radius-pill;
+  font-size: $fs-xs;
+  font-weight: $fw-semibold;
+  letter-spacing: 0.01em;
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+
+.t-neutral {
+  background: var(--bg-inset);
+  color: var(--ink-2);
+  border-color: var(--line);
+}
+
+.t-accent {
+  background: var(--accent-soft);
+  color: $color-accent;
+  border-color: $color-accent-line;
+}
+
+.t-positive {
+  background: var(--pos-soft);
+  color: $color-pos;
+  border-color: rgba($color-pos, 0.3);
+}
+
+.t-negative {
+  background: var(--neg-soft);
+  color: $color-neg;
+  border-color: rgba($color-neg, 0.3);
+}
+
+.t-amber {
+  background: rgba($color-amber, 0.12);
+  color: $color-amber;
+  border-color: rgba($color-amber, 0.3);
+}

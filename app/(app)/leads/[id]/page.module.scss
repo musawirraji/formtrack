@@ -1,0 +1,138 @@
+.wrap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-6);
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.crumbs {
+  display: flex;
+  gap: var(--s-2);
+  font-size: 13px;
+  color: var(--color-ink-3);
+
+  a {
+    color: var(--color-ink-2);
+    text-decoration: none;
+  }
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin: 0;
+  color: var(--color-ink);
+}
+
+.meta {
+  display: flex;
+  gap: var(--s-3);
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.metaItem {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--color-ink-3);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--s-4);
+
+  @media (max-width: 760px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.card {
+  padding: var(--s-5);
+}
+
+.fullWidth {
+  grid-column: 1 / -1;
+}
+
+.cardTitle {
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-ink-3);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin: 0 0 var(--s-3) 0;
+}
+
+.explanation {
+  font-size: 15px;
+  color: var(--color-ink);
+  line-height: 1.55;
+  margin: 0 0 var(--s-4) 0;
+}
+
+.dl {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: var(--s-2) var(--s-3);
+  margin: 0;
+  font-size: 14px;
+
+  dt {
+    color: var(--color-ink-3);
+    font-size: 12px;
+  }
+
+  dd {
+    margin: 0;
+    color: var(--color-ink);
+  }
+}
+
+.row {
+  display: contents;
+}
+
+.rowKey {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--color-ink-3);
+}
+
+.rowValue {
+  font-size: 14px;
+  color: var(--color-ink);
+  margin: 0;
+  word-break: break-word;
+}
+
+.link {
+  color: var(--color-accent);
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.json {
+  background: var(--color-bg-inset);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+  padding: var(--s-3);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--color-ink-2);
+  overflow-x: auto;
+  margin: 0;
+}

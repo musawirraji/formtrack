@@ -1,0 +1,176 @@
+// ─── Global styles ───────────────────────────────────────────
+//
+// CRITICAL: every name emitted here must match the `var(--…)`
+// references in component .module.scss files. If you add a new
+// token, emit it here too — otherwise components will silently
+// fall back to nothing and the whole page renders unstyled.
+
+:root {
+  // ─── Color surfaces ──────────────────────────────────────
+  --color-bg:          #{$color-bg};
+  --color-bg-raised:   #{$color-bg-raised};
+  --color-bg-elevated: #{$color-bg-elevated};
+  --color-bg-inset:    #{$color-bg-inset};
+  --color-line:        #{$color-line};
+  --color-line-strong: #{$color-line-strong};
+
+  // Aliases some stylesheets use
+  --bg:          #{$color-bg};
+  --bg-raised:   #{$color-bg-raised};
+  --bg-elevated: #{$color-bg-elevated};
+  --bg-inset:    #{$color-bg-inset};
+  --line:        #{$color-line};
+  --line-strong: #{$color-line-strong};
+
+  // ─── Ink (text) ──────────────────────────────────────────
+  --color-ink:    #{$color-ink};
+  --color-ink-2:  #{$color-ink-2};
+  --color-ink-3:  #{$color-ink-3};
+  --ink:    #{$color-ink};
+  --ink-2:  #{$color-ink-2};
+  --ink-3:  #{$color-ink-3};
+
+  // ─── Accent ──────────────────────────────────────────────
+  --color-accent:      #{$color-accent};
+  --color-accent-hi:   #{$color-accent-hi};
+  --color-accent-line: #{$color-accent-line};
+  --color-accent-soft: #{rgba($color-accent, 0.12)};
+  --accent:      #{$color-accent};
+  --accent-hi:   #{$color-accent-hi};
+  --accent-line: #{$color-accent-line};
+  --accent-soft: #{rgba($color-accent, 0.12)};
+
+  // ─── Semantic ────────────────────────────────────────────
+  --color-positive:  #{$color-pos};
+  --color-negative:  #{$color-neg};
+  --color-pos:       #{$color-pos};
+  --color-neg:       #{$color-neg};
+  --color-amber:     #{$color-amber};
+  --pos:             #{$color-pos};
+  --pos-soft:        #{rgba($color-pos, 0.12)};
+  --neg:             #{$color-neg};
+  --neg-soft:        #{rgba($color-neg, 0.12)};
+  --amber:           #{$color-amber};
+
+  // ─── Spacing (4pt grid) ──────────────────────────────────
+  --s-1:  #{$s-1};
+  --s-2:  #{$s-2};
+  --s-3:  #{$s-3};
+  --s-4:  #{$s-4};
+  --s-5:  #{$s-5};
+  --s-6:  #{$s-6};
+  --s-8:  #{$s-8};
+  --s-10: #{$s-10};
+  --s-12: #{$s-12};
+  --s-16: #{$s-16};
+
+  // ─── Radii ───────────────────────────────────────────────
+  --radius-sm:   #{$radius-sm};
+  --radius-md:   #{$radius-md};
+  --radius-lg:   #{$radius-lg};
+  --radius-xl:   #{$radius-xl};
+  --radius-pill: #{$radius-pill};
+
+  // ─── Typography ──────────────────────────────────────────
+  --font-display: #{$font-display};
+  --font-ui:      #{$font-ui};
+  --font-body:    #{$font-ui};
+  --font-mono:    #{$font-mono};
+
+  // ─── Motion ──────────────────────────────────────────────
+  --motion:      #{$t-base} #{$ease};
+  --motion-fast: #{$t-fast} #{$ease};
+  --motion-slow: #{$t-slow} #{$ease};
+
+  // ─── Shadows ─────────────────────────────────────────────
+  --shadow-card: #{$shadow-card-dark};
+  --shadow-glow: #{$shadow-glow};
+
+  color-scheme: dark;
+}
+
+// ─── Light mode overrides ────────────────────────────────────
+@mixin light-theme {
+  --color-bg:          #{$color-bg-light};
+  --color-bg-raised:   #{$color-bg-raised-light};
+  --color-bg-elevated: #{$color-bg-elevated-light};
+  --color-bg-inset:    #{$color-bg-inset-light};
+  --color-line:        #{$color-line-light};
+  --color-line-strong: #{$color-line-strong-light};
+
+  --bg:          #{$color-bg-light};
+  --bg-raised:   #{$color-bg-raised-light};
+  --bg-elevated: #{$color-bg-elevated-light};
+  --bg-inset:    #{$color-bg-inset-light};
+  --line:        #{$color-line-light};
+  --line-strong: #{$color-line-strong-light};
+
+  --color-ink:   #{$color-ink-light};
+  --color-ink-2: #{$color-ink-2-light};
+  --color-ink-3: #{$color-ink-3-light};
+  --ink:   #{$color-ink-light};
+  --ink-2: #{$color-ink-2-light};
+  --ink-3: #{$color-ink-3-light};
+
+  --color-accent-soft: #{rgba($color-accent, 0.08)};
+  --accent-soft:       #{rgba($color-accent, 0.08)};
+
+  --shadow-card: #{$shadow-card-light};
+
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    @include light-theme;
+  }
+}
+
+html[data-theme="light"] {
+  @include light-theme;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--color-bg);
+  color: var(--color-ink);
+  font-family: $font-ui;
+  font-size: $fs-base;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+svg {
+  display: block;
+}
+
+// Reduced motion preference
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

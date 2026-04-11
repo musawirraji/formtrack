@@ -1,0 +1,149 @@
+.wrap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-6);
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--color-ink);
+  margin: 0;
+}
+
+.sub {
+  font-size: 14px;
+  color: var(--color-ink-2);
+  max-width: 580px;
+  margin: 0;
+}
+
+.summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--s-4);
+}
+
+.summaryCard {
+  padding: var(--s-5);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.summaryLabel {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-ink-3);
+}
+
+.summaryValue {
+  font-family: var(--font-display);
+  font-size: 36px;
+  font-weight: 700;
+  color: var(--color-ink);
+}
+
+.summarySub {
+  font-size: 11px;
+  color: var(--color-ink-3);
+}
+
+.chartCard {
+  padding: var(--s-5);
+}
+
+.chartTitle {
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-ink-3);
+  margin: 0 0 var(--s-4) 0;
+}
+
+.empty {
+  font-size: 14px;
+  color: var(--color-ink-3);
+  margin: 0;
+}
+
+.barList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-4);
+}
+
+.bar {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.barMeta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+}
+
+.barLabel {
+  color: var(--color-ink);
+  font-weight: 500;
+}
+
+.barCount {
+  font-family: var(--font-mono);
+  color: var(--color-ink-2);
+}
+
+.barTrack {
+  display: flex;
+  height: 10px;
+  background: var(--color-bg-inset);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+}
+
+.barFillHigh {
+  background: var(--color-positive);
+}
+.barFillMedium {
+  background: var(--color-accent);
+}
+.barFillLow {
+  background: rgba(255, 122, 147, 0.4);
+}
+
+.barLegend {
+  display: flex;
+  gap: var(--s-3);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--color-ink-3);
+}
+
+.legendHigh {
+  color: var(--color-positive);
+}
+.legendMed {
+  color: var(--color-accent);
+}
+.legendLow {
+  color: var(--color-ink-3);
+}

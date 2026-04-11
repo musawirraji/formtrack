@@ -1,0 +1,29 @@
+.grid {
+  display: grid;
+  grid-template-columns: 248px 1fr;
+  grid-template-rows: auto 1fr;
+  grid-template-areas:
+    "sidebar topbar"
+    "sidebar content";
+  min-height: 100vh;
+  background: var(--color-bg);
+}
+
+.content {
+  grid-area: content;
+  padding: var(--s-8) var(--s-10);
+  overflow-x: hidden;
+}
+
+@media (max-width: 960px) {
+  .grid {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "topbar"
+      "sidebar"
+      "content";
+  }
+  .content {
+    padding: var(--s-6);
+  }
+}

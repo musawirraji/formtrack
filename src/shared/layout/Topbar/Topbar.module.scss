@@ -1,0 +1,138 @@
+.topbar {
+  grid-area: topbar;
+  display: flex;
+  align-items: center;
+  gap: var(--s-4);
+  padding: var(--s-4) var(--s-8);
+  background: var(--color-bg);
+  border-bottom: 1px solid var(--color-line);
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  backdrop-filter: blur(8px);
+}
+
+.search {
+  flex: 1 1 auto;
+  max-width: 520px;
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  padding: 0 var(--s-3);
+  height: 40px;
+  background: var(--color-bg-inset);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-pill);
+  color: var(--color-ink-3);
+  transition:
+    border-color var(--motion),
+    box-shadow var(--motion);
+
+  &:focus-within {
+    border-color: var(--color-accent-line);
+    box-shadow: 0 0 0 4px rgba(124, 107, 255, 0.12);
+  }
+}
+
+.searchInput {
+  flex: 1 1 auto;
+  background: transparent;
+  border: 0;
+  outline: 0;
+  color: var(--color-ink);
+  font-family: var(--font-ui);
+  font-size: 14px;
+
+  &::placeholder {
+    color: var(--color-ink-3);
+  }
+}
+
+.kbd {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-line);
+  color: var(--color-ink-3);
+}
+
+.right {
+  display: flex;
+  align-items: center;
+  gap: var(--s-4);
+}
+
+.iconBtn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-pill);
+  background: var(--color-bg-inset);
+  border: 1px solid var(--color-line);
+  color: var(--color-ink-2);
+  cursor: pointer;
+  transition:
+    color var(--motion),
+    border-color var(--motion);
+
+  &:hover {
+    color: var(--color-ink);
+    border-color: var(--color-line-strong);
+  }
+}
+
+.dot {
+  position: absolute;
+  top: 8px;
+  right: 9px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  box-shadow: 0 0 0 2px var(--color-bg);
+}
+
+.divider {
+  width: 1px;
+  height: 28px;
+  background: var(--color-line);
+}
+
+.user {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+}
+
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-pill);
+  background: linear-gradient(135deg, #3a2fa0, var(--color-accent));
+  color: var(--color-ink);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.userMeta {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.userEmail {
+  font-size: 13px;
+  color: var(--color-ink);
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

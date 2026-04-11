@@ -1,0 +1,11 @@
+.card {
+  @include card;
+}
+
+.glow {
+  @include card-glow;
+}
+
+.flush {
+  padding: 0;
+}

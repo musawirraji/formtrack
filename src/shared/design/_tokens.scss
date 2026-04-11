@@ -1,0 +1,94 @@
+// ─── FormTrack design tokens ─────────────────────────────────
+// Altera-inspired dark-first palette with light auto-switch.
+// Exposed as CSS custom properties on :root so component
+// .module.scss files consume them via var(--token).
+
+// ─── Raw values (dark) ───────────────────────────────────────
+$color-bg:          #0B0B12;
+$color-bg-raised:   #15151E;
+$color-bg-elevated: #1C1C27;
+$color-bg-inset:    #0E0E16;
+$color-line:        #24242F;
+$color-line-strong: #33334A;
+
+$color-ink:   #F4F4FA;
+$color-ink-2: #A1A1B3;
+$color-ink-3: #6B6B80;
+
+$color-accent:      #7C6BFF;
+$color-accent-hi:   #8F7FFF;
+$color-accent-line: #7C6BFF4D;
+
+$color-pos: #6EE7A0;
+$color-neg: #FF7A93;
+$color-amber: #F4C261;
+
+// ─── Light mode equivalents ──────────────────────────────────
+$color-bg-light:          #F4F4FA;
+$color-bg-raised-light:   #FFFFFF;
+$color-bg-elevated-light: #FFFFFF;
+$color-bg-inset-light:    #EDEDF4;
+$color-line-light:        #E4E4ED;
+$color-line-strong-light: #CFCFDC;
+
+$color-ink-light:   #0E0E16;
+$color-ink-2-light: #4A4A5C;
+$color-ink-3-light: #8A8A9C;
+
+// ─── Radii ───────────────────────────────────────────────────
+$radius-sm: 10px;
+$radius-md: 14px;
+$radius-lg: 20px;
+$radius-xl: 28px;
+$radius-pill: 999px;
+
+// ─── Spacing (4pt grid) ──────────────────────────────────────
+$s-1: 4px;
+$s-2: 8px;
+$s-3: 12px;
+$s-4: 16px;
+$s-5: 20px;
+$s-6: 24px;
+$s-8: 32px;
+$s-10: 40px;
+$s-12: 48px;
+$s-16: 64px;
+
+// ─── Typography ──────────────────────────────────────────────
+$font-display: "Inter Tight", -apple-system, system-ui, sans-serif;
+$font-ui:      "Inter", -apple-system, system-ui, sans-serif;
+$font-mono:    "JetBrains Mono", ui-monospace, "SF Mono", monospace;
+
+$fs-xs:    0.75rem;     // 12
+$fs-sm:    0.8125rem;   // 13
+$fs-base:  0.875rem;    // 14
+$fs-md:    1rem;        // 16
+$fs-lg:    1.125rem;    // 18
+$fs-xl:    1.375rem;    // 22
+$fs-2xl:   1.75rem;     // 28
+$fs-3xl:   2.375rem;    // 38
+$fs-4xl:   3.25rem;     // 52 (hero number)
+
+$fw-regular: 400;
+$fw-medium:  500;
+$fw-semibold: 600;
+$fw-bold:    700;
+$fw-black:   800;
+
+// ─── Motion ──────────────────────────────────────────────────
+$ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+$t-fast:   120ms;
+$t-base:   180ms;
+$t-slow:   240ms;
+
+// ─── Shadow ──────────────────────────────────────────────────
+$shadow-card-dark:  0 1px 0 rgba(255,255,255,0.03) inset, 0 20px 60px rgba(0,0,0,0.35);
+$shadow-card-light: 0 1px 0 rgba(255,255,255,0.6) inset, 0 12px 40px rgba(20,20,40,0.06);
+$shadow-glow:       0 0 0 1px $color-accent-line, 0 20px 80px -20px $color-accent-line;
+
+// ─── z-index ─────────────────────────────────────────────────
+$z-dropdown: 100;
+$z-sticky:   200;
+$z-overlay:  900;
+$z-modal:    1000;
+$z-toast:    1100;
