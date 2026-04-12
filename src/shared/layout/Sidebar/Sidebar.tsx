@@ -85,7 +85,7 @@ export function Sidebar({
       <ul className={styles.group}>
         {PRIMARY.map((item) => (
           <li key={item.href}>
-            <NavLink item={item} pathname={pathname} />
+            <NavLink item={item} pathname={pathname} onClick={onClose} />
           </li>
         ))}
       </ul>
@@ -95,7 +95,7 @@ export function Sidebar({
       <ul className={styles.group}>
         {SECONDARY.map((item) => (
           <li key={item.href}>
-            <NavLink item={item} pathname={pathname} />
+            <NavLink item={item} pathname={pathname} onClick={onClose} />
           </li>
         ))}
       </ul>
@@ -120,8 +120,10 @@ function CloseIcon() {
 function NavLink({
   item,
   pathname,
+  onClick,
 }: {
   item: NavItem;
+  onClick?: () => void;
   pathname: string;
 }) {
   const active =
@@ -133,6 +135,7 @@ function NavLink({
         .filter(Boolean)
         .join(" ")}
       aria-current={active ? "page" : undefined}
+      onClick={onClick}
     >
       <span className={styles.linkIcon}>{item.icon}</span>
       <span className={styles.linkLabel}>{item.label}</span>

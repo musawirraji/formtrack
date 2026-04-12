@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useRef, useState } from "react";
 
 import { Button } from "@/shared/components/Button";
 import { TextField } from "@/shared/components/TextField";
@@ -27,12 +27,17 @@ export function FieldEditor({ field, onChange, onDelete }: FieldEditorProps) {
     field ? field.options.join("\n") : "",
   );
 
-  useEffect(() => {
+  // Sync local draft state when the selected field changes. We track
+  // identity via the field id rather than using an effect (which would
+  // trigger the react-hooks/set-state-in-effect lint rule).
+  const prevFieldId = useRef(field?.id);
+  if (prevFieldId.current !== field?.id) {
+    prevFieldId.current = field?.id;
     setLabel(field?.label ?? "");
     setPlaceholder(field?.placeholder ?? "");
     setHelpText(field?.helpText ?? "");
     setOptionsText(field ? field.options.join("\n") : "");
-  }, [field]);
+  }
 
   if (!field) {
     return (

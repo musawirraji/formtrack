@@ -15,7 +15,6 @@ import type {
 export function resolveAttribution(raw: AttributionPayload): AttributionSource {
   const utmSource = raw.utmSource?.toLowerCase().trim();
   const utmMedium = raw.utmMedium?.toLowerCase().trim();
-  const hasClickId = Boolean(raw.fbclid || raw.gclid);
   const referrerHost = safeHost(raw.referrer);
 
   // 1. Explicit UTM match wins every time.

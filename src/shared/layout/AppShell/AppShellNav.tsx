@@ -1,7 +1,6 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { usePathname } from "next/navigation";
 
 import { Sidebar } from "@/shared/layout/Sidebar/Sidebar";
 import { Topbar } from "@/shared/layout/Topbar/Topbar";
@@ -19,8 +18,8 @@ import { Topbar } from "@/shared/layout/Topbar/Topbar";
  *   - ≥ 960px: sidebar is static (CSS grid column), drawer state is
  *     effectively a no-op.
  *   - < 960px: sidebar slides in from the left, a backdrop covers the
- *     content, Escape closes it, and navigating to a new route auto-
- *     closes. Body scroll is locked while open.
+ *     content, Escape closes it, clicking a nav link auto-closes.
+ *     Body scroll is locked while open.
  */
 export interface AppShellNavProps {
   readonly workspaceName: string;
@@ -34,15 +33,9 @@ export function AppShellNav({
   userEmail,
 }: AppShellNavProps) {
   const [open, setOpen] = useState(false);
-  const pathname = usePathname();
 
   const close = useCallback(() => setOpen(false), []);
   const toggle = useCallback(() => setOpen((v) => !v), []);
-
-  // Close drawer on route change.
-  useEffect(() => {
-    setOpen(false);
-  }, [pathname]);
 
   // Escape closes, body scroll lock while open.
   useEffect(() => {

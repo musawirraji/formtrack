@@ -71,7 +71,7 @@ export function PlanButtons({ planId, isCurrent, isFree }: Props) {
   }
 
   if (isCurrent && isFree) {
-    return <p className={styles.currentNote}>You're on the free plan.</p>;
+    return <p className={styles.currentNote}>You&apos;re on the free plan.</p>;
   }
 
   if (isFree) {

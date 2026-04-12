@@ -24,7 +24,7 @@ export default async function BillingPage({ searchParams }: Props) {
       <header className={styles.header}>
         <h1 className={styles.title}>Billing</h1>
         <p className={styles.sub}>
-          You're currently on the{" "}
+          You&apos;re currently on the{" "}
           <strong>{current.name}</strong> plan. Upgrade for more forms,
           submissions, and connected inboxes.
         </p>
