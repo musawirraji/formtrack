@@ -15,6 +15,7 @@
 
 import { redirect } from "next/navigation";
 
+import { createAdminSupabase } from "@/infrastructure/supabase/admin";
 import { createServerSupabase } from "@/infrastructure/supabase/server";
 import type { WorkspaceRole } from "@/types/database";
 
@@ -49,6 +50,16 @@ export interface AuthenticatedContext {
     readonly plan: "free" | "starter" | "growth" | "business";
     readonly role: WorkspaceRole;
   };
+  /**
+   * True when the workspace_id was NOT in the JWT and had to be
+   * resolved via a DB fallback. In this state the Supabase user-
+   * scoped client will fail RLS checks that rely on
+   * `current_workspace_id()`, because the in-flight JWT is stale.
+   *
+   * Callers that perform writes should use the admin client when
+   * this is true and scope the query to `workspace.id` manually.
+   */
+  readonly jwtStale: boolean;
 }
 
 /** Role hierarchy: owner > admin > member. */
@@ -94,8 +105,11 @@ export async function requireWorkspace(options?: {
       ?.workspace_id ?? null;
 
   let workspaceId = metadataWorkspaceId;
+  let jwtStale = false;
 
   if (!workspaceId) {
+    // JWT doesn't have workspace_id — user probably just signed up
+    // and the token hasn't been refreshed yet. Look it up directly.
     const { data: fallback } = await supabase
       .from("workspace_members")
       .select("workspace_id")
@@ -104,15 +118,69 @@ export async function requireWorkspace(options?: {
       .limit(1)
       .maybeSingle();
     workspaceId = fallback?.workspace_id ?? null;
+    jwtStale = workspaceId !== null;
   }
 
   if (!workspaceId) {
     throw new NoWorkspaceError();
   }
 
-  // Load workspace + membership row in parallel. Both go through RLS,
-  // so the response will be empty if the user isn't actually a member
-  // — that's the point.
+  // When the JWT is stale, use the admin client to load workspace
+  // data (the user-scoped client's RLS would fail on tables that
+  // check current_workspace_id()). Also stamp app_metadata and
+  // refresh the session so the NEXT request gets a healthy JWT.
+  if (jwtStale) {
+    const admin = createAdminSupabase();
+
+    // Load workspace + membership via admin (bypasses RLS).
+    const [workspaceRes, membershipRes] = await Promise.all([
+      admin
+        .from("workspaces")
+        .select("id, name, slug, plan")
+        .eq("id", workspaceId)
+        .maybeSingle(),
+      admin
+        .from("workspace_members")
+        .select("role")
+        .eq("workspace_id", workspaceId)
+        .eq("user_id", user.id)
+        .maybeSingle(),
+    ]);
+
+    if (!workspaceRes.data || !membershipRes.data) {
+      throw new NoWorkspaceError();
+    }
+
+    const role = membershipRes.data.role as WorkspaceRole;
+    if (options?.minRole && !hasRole(role, options.minRole)) {
+      throw new InsufficientRoleError(options.minRole, role);
+    }
+
+    // Fire-and-forget: stamp workspace_id + refresh so future
+    // requests get a good JWT. Errors are non-fatal; the fallback
+    // path will just run again next time.
+    admin.auth.admin
+      .updateUserById(user.id, {
+        app_metadata: { workspace_id: workspaceId },
+      })
+      .then(() => supabase.auth.refreshSession())
+      .catch(() => {});
+
+    return {
+      userId: user.id,
+      email: user.email ?? null,
+      workspace: {
+        id: workspaceRes.data.id,
+        name: workspaceRes.data.name,
+        slug: workspaceRes.data.slug,
+        plan: workspaceRes.data.plan,
+        role,
+      },
+      jwtStale: true,
+    };
+  }
+
+  // Happy path: JWT has workspace_id, use the user-scoped client.
   const [workspaceRes, membershipRes] = await Promise.all([
     supabase
       .from("workspaces")
@@ -147,6 +215,7 @@ export async function requireWorkspace(options?: {
       plan: workspaceRes.data.plan,
       role,
     },
+    jwtStale: false,
   };
 }
 

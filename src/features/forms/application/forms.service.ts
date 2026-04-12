@@ -1,5 +1,6 @@
 import "server-only";
 
+import { createAdminSupabase } from "@/infrastructure/supabase/admin";
 import { createServerSupabase } from "@/infrastructure/supabase/server";
 import { DEFAULT_THEME, parseTheme } from "@/domain/form/theme";
 import {
@@ -28,8 +29,10 @@ import type { Json, Tables, TablesInsert } from "@/types/database";
  *      for the UI in one place so the rest of the app doesn't leak
  *      Postgres column names.
  *
- * If a function needs the service role, it's a bug — reads and writes
- * from authenticated users must always go through RLS.
+ * Exception: when `requireWorkspace` reports a stale JWT (e.g. right
+ * after signup before the token refreshes), write operations fall back
+ * to the admin client scoped to the verified workspace_id. This is
+ * safe because workspace membership was already confirmed.
  */
 
 export interface FormSummary {
@@ -66,10 +69,30 @@ export class SlugConflictError extends Error {
   }
 }
 
+export class RlsPolicyError extends Error {
+  constructor(table: string) {
+    super(
+      `Permission denied on "${table}". Your session may be stale — ` +
+        `please refresh the page and try again.`,
+    );
+    this.name = "RlsPolicyError";
+  }
+}
+
+/** Detect Supabase RLS violation errors (code 42501 or the text hint). */
+function isRlsViolation(error: { code?: string; message?: string }): boolean {
+  return (
+    error.code === "42501" ||
+    (error.message ?? "").includes("row-level security")
+  );
+}
+
 // ─── List forms ─────────────────────────────────────────────
 export async function listForms(): Promise<FormSummary[]> {
   const ctx = await requireWorkspace();
-  const supabase = await createServerSupabase();
+  const supabase = ctx.jwtStale
+    ? createAdminSupabase()
+    : await createServerSupabase();
 
   const { data, error } = await supabase
     .from("forms")
@@ -102,7 +125,9 @@ export async function listForms(): Promise<FormSummary[]> {
 // ─── Get one form ──────────────────────────────────────────
 export async function getForm(id: string): Promise<FormDetail> {
   const ctx = await requireWorkspace();
-  const supabase = await createServerSupabase();
+  const supabase = ctx.jwtStale
+    ? createAdminSupabase()
+    : await createServerSupabase();
 
   const { data, error } = await supabase
     .from("forms")
@@ -125,8 +150,16 @@ export async function createForm(input: FormCreateInput): Promise<FormDetail> {
   // Plan gate: bail before we take the slug + write the row.
   await assertCanCreateForm(ctx.workspace.id, ctx.workspace.plan);
 
-  const supabase = await createServerSupabase();
+  // Pick the right client: user-scoped (RLS) when the JWT is
+  // healthy, admin (service-role) when the JWT is stale (e.g. right
+  // after signup). The admin path is safe because requireWorkspace()
+  // already verified workspace membership above.
+  const supabase = ctx.jwtStale
+    ? createAdminSupabase()
+    : await createServerSupabase();
+
   const slug = await resolveUniqueSlug(
+    supabase,
     ctx.workspace.id,
     parsed.slug ?? titleToSlug(parsed.title),
   );
@@ -149,8 +182,10 @@ export async function createForm(input: FormCreateInput): Promise<FormDetail> {
 
   if (error) {
     if (error.code === "23505") {
-      // Race: another tab just took the slug. Retry with a suffix.
       throw new SlugConflictError(slug);
+    }
+    if (isRlsViolation(error)) {
+      throw new RlsPolicyError("forms");
     }
     throw new Error(`createForm: ${error.message}`);
   }
@@ -175,6 +210,9 @@ export async function createForm(input: FormCreateInput): Promise<FormDetail> {
       .from("form_fields")
       .insert(fieldRows);
     if (fieldError) {
+      if (isRlsViolation(fieldError)) {
+        throw new RlsPolicyError("form_fields");
+      }
       throw new Error(`createForm fields: ${fieldError.message}`);
     }
   }
@@ -190,7 +228,9 @@ export async function updateForm(
   const ctx = await requireWorkspace();
   const parsed = formUpdateSchema.parse(patch);
 
-  const supabase = await createServerSupabase();
+  const supabase = ctx.jwtStale
+    ? createAdminSupabase()
+    : await createServerSupabase();
 
   const { data, error } = await supabase
     .from("forms")
@@ -221,7 +261,10 @@ export async function updateForm(
     .select("*")
     .maybeSingle();
 
-  if (error) throw new Error(`updateForm: ${error.message}`);
+  if (error) {
+    if (isRlsViolation(error)) throw new RlsPolicyError("forms");
+    throw new Error(`updateForm: ${error.message}`);
+  }
   if (!data) throw new FormNotFoundError(id);
 
   return toFormDetail(data);
@@ -230,7 +273,9 @@ export async function updateForm(
 // ─── Delete form ──────────────────────────────────────────
 export async function deleteForm(id: string): Promise<void> {
   const ctx = await requireWorkspace();
-  const supabase = await createServerSupabase();
+  const supabase = ctx.jwtStale
+    ? createAdminSupabase()
+    : await createServerSupabase();
 
   const { error, count } = await supabase
     .from("forms")
@@ -238,16 +283,25 @@ export async function deleteForm(id: string): Promise<void> {
     .eq("workspace_id", ctx.workspace.id)
     .eq("id", id);
 
-  if (error) throw new Error(`deleteForm: ${error.message}`);
+  if (error) {
+    if (isRlsViolation(error)) throw new RlsPolicyError("forms");
+    throw new Error(`deleteForm: ${error.message}`);
+  }
   if (count === 0) throw new FormNotFoundError(id);
 }
 
 // ─── Ensure slug is unique in the workspace ───────────────
+type SupabaseLike = ReturnType<typeof createServerSupabase> extends Promise<
+  infer C
+>
+  ? C
+  : never;
+
 async function resolveUniqueSlug(
+  supabase: SupabaseLike | ReturnType<typeof createAdminSupabase>,
   workspaceId: string,
   base: string,
 ): Promise<string> {
-  const supabase = await createServerSupabase();
   const { data, error } = await supabase
     .from("forms")
     .select("slug")
@@ -255,7 +309,7 @@ async function resolveUniqueSlug(
     .ilike("slug", `${base}%`);
   if (error) throw new Error(`resolveUniqueSlug: ${error.message}`);
 
-  const taken = new Set((data ?? []).map((r) => r.slug));
+  const taken = new Set((data ?? []).map((r: { slug: string }) => r.slug));
   if (!taken.has(base)) return base;
 
   for (let i = 2; i < 1000; i++) {

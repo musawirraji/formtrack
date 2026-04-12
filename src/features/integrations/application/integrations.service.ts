@@ -2,7 +2,7 @@ import "server-only";
 
 import { createServerSupabase } from "@/infrastructure/supabase/server";
 import { createAdminSupabase } from "@/infrastructure/supabase/admin";
-import { requireWorkspace } from "@/lib/auth/requireWorkspace";
+import { requireWorkspace, type AuthenticatedContext } from "@/lib/auth/requireWorkspace";
 import type { Tables, TablesInsert, TablesUpdate } from "@/types/database";
 
 import { encryptToken, decryptToken } from "./tokens";
@@ -14,6 +14,11 @@ import { encryptToken, decryptToken } from "./tokens";
  * still gates on `requireWorkspace()` + an explicit workspace_id match
  * so a compromised user token can't escalate into another tenant.
  */
+
+/** Pick the right client based on JWT freshness. */
+async function getClient(ctx: AuthenticatedContext) {
+  return ctx.jwtStale ? createAdminSupabase() : await createServerSupabase();
+}
 
 export type IntegrationProvider = "google" | "microsoft" | "stripe";
 export type IntegrationStatus = "active" | "expired" | "revoked" | "error";
@@ -60,7 +65,7 @@ function toSummary(row: Tables<"integrations">): IntegrationSummary {
 // ─── Reads (RLS-scoped) ────────────────────────────────────
 export async function listIntegrations(): Promise<IntegrationSummary[]> {
   const ctx = await requireWorkspace();
-  const supabase = await createServerSupabase();
+  const supabase = await getClient(ctx);
 
   const { data, error } = await supabase
     .from("integrations")

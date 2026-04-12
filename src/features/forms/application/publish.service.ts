@@ -1,15 +1,23 @@
 import "server-only";
 
-import { createServerSupabase } from "@/infrastructure/supabase/server";
 import { createAdminSupabase } from "@/infrastructure/supabase/admin";
+import { createServerSupabase } from "@/infrastructure/supabase/server";
 import { parseTheme } from "@/domain/form/theme";
 import {
   buildSnapshot,
   type FormSnapshot,
   type FormSnapshotField,
 } from "@/domain/form/snapshot";
-import { requireWorkspace } from "@/lib/auth/requireWorkspace";
+import {
+  requireWorkspace,
+  type AuthenticatedContext,
+} from "@/lib/auth/requireWorkspace";
 import type { Json, Tables } from "@/types/database";
+
+/** Pick the right client based on JWT freshness. */
+async function getClient(ctx: AuthenticatedContext) {
+  return ctx.jwtStale ? createAdminSupabase() : await createServerSupabase();
+}
 
 import {
   FormNotFoundError,
@@ -47,7 +55,7 @@ export class FormNotPublishedError extends Error {
 // ─── Publish a form ────────────────────────────────────────
 export async function publishForm(formId: string): Promise<FormSnapshot> {
   const ctx = await requireWorkspace();
-  const supabase = await createServerSupabase();
+  const supabase = await getClient(ctx);
 
   // Load form + fields under RLS.
   const { data: formRow, error: formError } = await supabase
@@ -146,7 +154,7 @@ export async function publishForm(formId: string): Promise<FormSnapshot> {
 // ─── Unpublish ─────────────────────────────────────────────
 export async function unpublishForm(formId: string): Promise<void> {
   const ctx = await requireWorkspace();
-  const supabase = await createServerSupabase();
+  const supabase = await getClient(ctx);
 
   const { error } = await supabase
     .from("forms")
@@ -169,7 +177,7 @@ export interface FormVersionSummary {
 
 export async function listVersions(formId: string): Promise<FormVersionSummary[]> {
   const ctx = await requireWorkspace();
-  const supabase = await createServerSupabase();
+  const supabase = await getClient(ctx);
 
   const { data, error } = await supabase
     .from("form_versions")

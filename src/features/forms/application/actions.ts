@@ -9,6 +9,7 @@ import {
   createForm,
   deleteForm,
   FormNotFoundError,
+  RlsPolicyError,
   SlugConflictError,
 } from "./forms.service";
 
@@ -50,11 +51,21 @@ export async function createFormAction(
     revalidatePath("/forms");
     redirect(`/forms/${form.id}`);
   } catch (err) {
+    // Let Next.js redirect() propagate — it throws a special error.
+    if (err && typeof err === "object" && "digest" in err) throw err;
+
     if (err instanceof SlugConflictError) {
       return {
         ok: false,
         error: "That slug is already taken in this workspace.",
         fieldErrors: { slug: "Already taken" },
+      };
+    }
+    if (err instanceof RlsPolicyError) {
+      return {
+        ok: false,
+        error:
+          "Your session needs to refresh. Please reload the page and try again.",
       };
     }
     const fieldErrors = zodErrors(err);
@@ -101,17 +112,25 @@ export async function createFormFromTemplateAction(
     revalidatePath("/forms");
     redirect(`/forms/${form.id}`);
   } catch (err) {
+    // Let redirect() propagate (Next throws a special error).
+    if (err && typeof err === "object" && "digest" in err) throw err;
+
     if (err instanceof SlugConflictError) {
       return {
         ok: false,
         error: "A form with that slug already exists.",
       };
     }
-    // Let redirect() propagate (Next throws a special error).
-    if (err && typeof err === "object" && "digest" in err) throw err;
+    if (err instanceof RlsPolicyError) {
+      return {
+        ok: false,
+        error:
+          "Your session needs to refresh. Please reload the page and try again.",
+      };
+    }
     return {
       ok: false,
-      error: err instanceof Error ? err.message : "Couldn't create form.",
+      error: err instanceof Error ? err.message : "Could not create form.",
     };
   }
 }
@@ -125,7 +144,14 @@ export async function deleteFormAction(formData: FormData): Promise<void> {
     await deleteForm(id);
   } catch (err) {
     if (err instanceof FormNotFoundError) {
-      // idempotent — already gone
+      // idempotent — already gone, continue with redirect
+    } else if (err instanceof RlsPolicyError) {
+      // Can't throw a user-facing error from a void action;
+      // the form list page will show the form is still there.
+      // The session refresh triggered by requireWorkspace()
+      // will fix subsequent attempts.
+      console.error("[deleteFormAction] stale JWT — user needs to refresh");
+      return;
     } else {
       throw err;
     }

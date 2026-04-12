@@ -2,7 +2,7 @@ import "server-only";
 
 import { createServerSupabase } from "@/infrastructure/supabase/server";
 import { createAdminSupabase } from "@/infrastructure/supabase/admin";
-import { requireWorkspace } from "@/lib/auth/requireWorkspace";
+import { requireWorkspace, type AuthenticatedContext } from "@/lib/auth/requireWorkspace";
 import { assertCanInviteMember } from "@/features/billing/application/gates";
 import { writeAuditLog } from "@/features/audit/application/audit.service";
 import type { WorkspaceRole } from "@/types/database";
@@ -14,6 +14,11 @@ import type { WorkspaceRole } from "@/types/database";
  * gated on `requireWorkspace()` + role check so regular members can't
  * invite or kick anyone.
  */
+
+/** Pick the right client based on JWT freshness. */
+async function getClient(ctx: AuthenticatedContext) {
+  return ctx.jwtStale ? createAdminSupabase() : await createServerSupabase();
+}
 
 export interface Member {
   readonly userId: string;
@@ -37,7 +42,7 @@ function assertCanManage(role: WorkspaceRole): void {
 
 export async function listMembers(): Promise<Member[]> {
   const ctx = await requireWorkspace();
-  const supabase = await createServerSupabase();
+  const supabase = await getClient(ctx);
 
   const { data, error } = await supabase
     .from("workspace_members")

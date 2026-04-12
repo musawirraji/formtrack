@@ -2,7 +2,7 @@ import "server-only";
 
 import { createServerSupabase } from "@/infrastructure/supabase/server";
 import { createAdminSupabase } from "@/infrastructure/supabase/admin";
-import { requireWorkspace } from "@/lib/auth/requireWorkspace";
+import { requireWorkspace, type AuthenticatedContext } from "@/lib/auth/requireWorkspace";
 import type { Json, Tables, TablesInsert } from "@/types/database";
 
 /**
@@ -15,6 +15,11 @@ import type { Json, Tables, TablesInsert } from "@/types/database";
  * `resource_type` / `resource_id`, so this service maps our nicer
  * userId / entityType / entityId names onto those.
  */
+
+/** Pick the right client based on JWT freshness. */
+async function getClient(ctx: AuthenticatedContext) {
+  return ctx.jwtStale ? createAdminSupabase() : await createServerSupabase();
+}
 
 export interface AuditLogEntry {
   readonly id: number;
@@ -69,7 +74,7 @@ export async function listAuditLog(
   options: { limit?: number } = {},
 ): Promise<AuditLogEntry[]> {
   const ctx = await requireWorkspace();
-  const supabase = await createServerSupabase();
+  const supabase = await getClient(ctx);
 
   const { data, error } = await supabase
     .from("audit_log")

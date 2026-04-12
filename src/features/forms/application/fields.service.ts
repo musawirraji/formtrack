@@ -1,15 +1,24 @@
 import "server-only";
 
+import { createAdminSupabase } from "@/infrastructure/supabase/admin";
 import { createServerSupabase } from "@/infrastructure/supabase/server";
 import {
   formFieldInputSchema,
   type FieldTypeValue,
   type FormFieldInput,
 } from "@/domain/form/validation";
-import { requireWorkspace } from "@/lib/auth/requireWorkspace";
+import {
+  requireWorkspace,
+  type AuthenticatedContext,
+} from "@/lib/auth/requireWorkspace";
 import type { Json, Tables, TablesInsert } from "@/types/database";
 
 import { FormNotFoundError } from "./forms.service";
+
+/** Pick the right client based on JWT freshness. */
+async function getClient(ctx: AuthenticatedContext) {
+  return ctx.jwtStale ? createAdminSupabase() : await createServerSupabase();
+}
 
 /**
  * CRUD for form_fields. Every operation is workspace-scoped and
@@ -52,10 +61,11 @@ export function toFieldDTO(row: Tables<"form_fields">): FormFieldDTO {
 }
 
 async function assertFormBelongsToWorkspace(
+  ctx: AuthenticatedContext,
   formId: string,
   workspaceId: string,
 ): Promise<void> {
-  const supabase = await createServerSupabase();
+  const supabase = await getClient(ctx);
   const { data, error } = await supabase
     .from("forms")
     .select("id")
@@ -69,9 +79,9 @@ async function assertFormBelongsToWorkspace(
 // ─── List fields for a form ────────────────────────────────
 export async function listFields(formId: string): Promise<FormFieldDTO[]> {
   const ctx = await requireWorkspace();
-  await assertFormBelongsToWorkspace(formId, ctx.workspace.id);
+  await assertFormBelongsToWorkspace(ctx, formId, ctx.workspace.id);
 
-  const supabase = await createServerSupabase();
+  const supabase = await getClient(ctx);
   const { data, error } = await supabase
     .from("form_fields")
     .select("*")
@@ -91,9 +101,9 @@ export async function addField(
 ): Promise<FormFieldDTO> {
   const ctx = await requireWorkspace();
   const parsed = formFieldInputSchema.parse(input);
-  await assertFormBelongsToWorkspace(formId, ctx.workspace.id);
+  await assertFormBelongsToWorkspace(ctx, formId, ctx.workspace.id);
 
-  const supabase = await createServerSupabase();
+  const supabase = await getClient(ctx);
 
   // If displayOrder isn't given, append at the end of the same step.
   let order = parsed.displayOrder;
@@ -136,7 +146,7 @@ export async function updateField(
   patch: Partial<FormFieldInput>,
 ): Promise<FormFieldDTO> {
   const ctx = await requireWorkspace();
-  const supabase = await createServerSupabase();
+  const supabase = await getClient(ctx);
 
   const { data, error } = await supabase
     .from("form_fields")
@@ -169,7 +179,7 @@ export async function updateField(
 // ─── Delete one field ─────────────────────────────────────
 export async function deleteField(fieldId: string): Promise<void> {
   const ctx = await requireWorkspace();
-  const supabase = await createServerSupabase();
+  const supabase = await getClient(ctx);
 
   const { error } = await supabase
     .from("form_fields")
@@ -190,9 +200,9 @@ export async function reorderFields(
   orderedIds: readonly string[],
 ): Promise<void> {
   const ctx = await requireWorkspace();
-  await assertFormBelongsToWorkspace(formId, ctx.workspace.id);
+  await assertFormBelongsToWorkspace(ctx, formId, ctx.workspace.id);
 
-  const supabase = await createServerSupabase();
+  const supabase = await getClient(ctx);
   for (let i = 0; i < orderedIds.length; i++) {
     const id = orderedIds[i];
     if (!id) continue;
@@ -214,9 +224,9 @@ export async function applyTemplateFields(
   fields: readonly FormFieldInput[],
 ): Promise<FormFieldDTO[]> {
   const ctx = await requireWorkspace();
-  await assertFormBelongsToWorkspace(formId, ctx.workspace.id);
+  await assertFormBelongsToWorkspace(ctx, formId, ctx.workspace.id);
 
-  const supabase = await createServerSupabase();
+  const supabase = await getClient(ctx);
   const { count, error: countError } = await supabase
     .from("form_fields")
     .select("id", { count: "exact", head: true })

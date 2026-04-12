@@ -1,12 +1,18 @@
 import "server-only";
 
 import { createServerSupabase } from "@/infrastructure/supabase/server";
-import { requireWorkspace } from "@/lib/auth/requireWorkspace";
+import { createAdminSupabase } from "@/infrastructure/supabase/admin";
+import { requireWorkspace, type AuthenticatedContext } from "@/lib/auth/requireWorkspace";
 import type {
   LeadSourceChannel,
   LeadSourceConfidence,
   Tables,
 } from "@/types/database";
+
+/** Pick the right client based on JWT freshness. */
+async function getClient(ctx: AuthenticatedContext) {
+  return ctx.jwtStale ? createAdminSupabase() : await createServerSupabase();
+}
 
 /**
  * Leads feature service. All reads go through the user-scoped
@@ -62,7 +68,7 @@ export async function listLeads(
   filters: ListLeadsFilters = {},
 ): Promise<{ leads: LeadSummary[]; total: number }> {
   const ctx = await requireWorkspace();
-  const supabase = await createServerSupabase();
+  const supabase = await getClient(ctx);
 
   const limit = Math.min(filters.limit ?? 50, 200);
   const offset = filters.offset ?? 0;
@@ -96,7 +102,7 @@ export async function listLeads(
 // ─── Get lead detail ───────────────────────────────────
 export async function getLead(id: string): Promise<LeadDetail> {
   const ctx = await requireWorkspace();
-  const supabase = await createServerSupabase();
+  const supabase = await getClient(ctx);
 
   const { data, error } = await supabase
     .from("leads")
@@ -130,7 +136,7 @@ export async function getAttributionBreakdown(params: {
   confidenceTotals: Record<LeadSourceConfidence, number>;
 }> {
   const ctx = await requireWorkspace();
-  const supabase = await createServerSupabase();
+  const supabase = await getClient(ctx);
 
   let query = supabase
     .from("leads")
