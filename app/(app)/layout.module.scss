@@ -13,17 +13,28 @@
   grid-area: content;
   padding: var(--s-8) var(--s-10);
   overflow-x: hidden;
+  min-width: 0;
 }
 
+// ─── Mobile ≤ 960px ──────────────────────────────────────────
+// Sidebar becomes a fixed-position drawer (see Sidebar.module.scss),
+// so the grid collapses to a single column and the sidebar grid cell
+// gets 0 width — the drawer floats above.
 @media (max-width: 960px) {
   .grid {
     grid-template-columns: 1fr;
     grid-template-areas:
       "topbar"
-      "sidebar"
       "content";
   }
+
   .content {
-    padding: var(--s-6);
+    padding: var(--s-6) var(--s-5);
+  }
+}
+
+@media (max-width: 640px) {
+  .content {
+    padding: var(--s-5) var(--s-4);
   }
 }

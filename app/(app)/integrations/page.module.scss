@@ -153,3 +153,26 @@
   font-size: 12px;
   margin: var(--s-2) 0 0 0;
 }
+
+@media (max-width: 640px) {
+  .title {
+    font-size: 24px;
+  }
+
+  .cardHead {
+    flex-direction: column;
+  }
+
+  .meta {
+    grid-template-columns: 1fr;
+    gap: var(--s-1) 0;
+
+    dt {
+      margin-top: var(--s-2);
+    }
+  }
+
+  .actions {
+    flex-wrap: wrap;
+  }
+}

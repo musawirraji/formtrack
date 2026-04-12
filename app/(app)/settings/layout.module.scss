@@ -2,16 +2,15 @@
   display: grid;
   grid-template-columns: 200px 1fr;
   gap: var(--s-6);
-
-  @media (max-width: 760px) {
-    grid-template-columns: 1fr;
-  }
 }
 
 .nav {
   display: flex;
   flex-direction: column;
   gap: var(--s-3);
+  position: sticky;
+  top: var(--s-8);
+  align-self: start;
 }
 
 .navTitle {
@@ -39,6 +38,7 @@
   text-decoration: none;
   border-radius: var(--radius-md);
   font-size: 14px;
+  white-space: nowrap;
 
   &:hover {
     background: var(--color-bg-inset);
@@ -48,4 +48,38 @@
 
 .content {
   min-width: 0;
+}
+
+// ─── Mobile: collapse to horizontal scroll tab bar ────────────
+@media (max-width: 760px) {
+  .shell {
+    grid-template-columns: 1fr;
+    gap: var(--s-5);
+  }
+
+  .nav {
+    position: static;
+  }
+
+  .navTitle {
+    display: none;
+  }
+
+  .navList {
+    flex-direction: row;
+    gap: var(--s-2);
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: var(--s-2);
+    border-bottom: 1px solid var(--color-line);
+    scrollbar-width: thin;
+  }
+
+  .navLink {
+    padding: 10px 14px;
+    border-radius: var(--radius-pill);
+    background: var(--color-bg-inset);
+    border: 1px solid var(--color-line);
+    flex-shrink: 0;
+  }
 }

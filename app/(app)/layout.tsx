@@ -1,7 +1,6 @@
 import type { ReactNode } from "react";
 
-import { Sidebar } from "@/shared/layout/Sidebar/Sidebar";
-import { Topbar } from "@/shared/layout/Topbar/Topbar";
+import { AppShellNav } from "@/shared/layout/AppShell/AppShellNav";
 import { requireWorkspaceOrRedirect } from "@/lib/auth/requireWorkspace";
 
 import styles from "./layout.module.scss";
@@ -12,14 +11,18 @@ import styles from "./layout.module.scss";
  *
  *   1. `requireWorkspaceOrRedirect()` guarantees the user has a session
  *      AND a workspace, or bounces them to /login or /onboarding.
- *   2. The Sidebar + Topbar render with the resolved workspace in one
- *      RSC pass — no client-side spinner.
+ *   2. `<AppShellNav>` is a thin client wrapper that owns the mobile
+ *      drawer state and renders Sidebar + Topbar. We keep the data
+ *      fetch on the server and pass the bare fields in as props so
+ *      there's no client-side spinner.
  *   3. Child pages receive a narrowed, safe environment: everything
  *      they query through the Supabase client is already RLS-scoped
  *      to `ctx.workspace.id`.
  *
- * The shell uses CSS grid areas so the Sidebar + Topbar + content
- * layout works on any screen ≥ 960px. Mobile shell comes in step 3.5.
+ * Layout strategy:
+ *   - ≥ 961px: two-column CSS grid (sidebar | topbar+content).
+ *   - ≤ 960px: single column, sidebar becomes a fixed-position slide-
+ *     in drawer triggered by the hamburger in the Topbar.
  */
 export default async function AppLayout({
   children,
@@ -30,13 +33,10 @@ export default async function AppLayout({
 
   return (
     <div className={styles.grid}>
-      <Sidebar
+      <AppShellNav
         workspaceName={ctx.workspace.name}
         workspacePlan={ctx.workspace.plan}
-      />
-      <Topbar
         userEmail={ctx.email}
-        workspaceName={ctx.workspace.name}
       />
       <main className={styles.content}>{children}</main>
     </div>

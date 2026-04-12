@@ -110,12 +110,14 @@
 .tableWrap {
   border: 1px solid var(--color-line);
   border-radius: var(--radius-lg);
-  overflow: hidden;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
   background: var(--color-bg-raised);
 }
 
 .table {
   width: 100%;
+  min-width: 640px;
   border-collapse: collapse;
 
   th {
@@ -189,4 +191,26 @@
   font-size: 12px;
   color: var(--color-ink-3);
   white-space: nowrap;
+}
+
+@media (max-width: 640px) {
+  .title {
+    font-size: 24px;
+  }
+
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .filters {
+    width: 100%;
+  }
+
+  .search,
+  .select {
+    flex: 1 1 100%;
+    min-width: 0;
+    width: 100%;
+  }
 }

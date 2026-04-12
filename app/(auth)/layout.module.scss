@@ -109,3 +109,10 @@
   width: 100%;
   max-width: 440px;
 }
+
+@media (max-width: 640px) {
+  .panel {
+    padding: var(--s-8) var(--s-5);
+    align-items: flex-start;
+  }
+}

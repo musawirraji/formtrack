@@ -147,3 +147,17 @@
 .legendLow {
   color: var(--color-ink-3);
 }
+
+@media (max-width: 640px) {
+  .title {
+    font-size: 24px;
+  }
+
+  .summaryValue {
+    font-size: 28px;
+  }
+
+  .summary {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

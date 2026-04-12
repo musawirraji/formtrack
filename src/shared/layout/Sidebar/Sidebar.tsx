@@ -27,17 +27,50 @@ const SECONDARY: readonly NavItem[] = [
 export interface SidebarProps {
   readonly workspaceName: string;
   readonly workspacePlan: string;
+  /** Mobile drawer open state. Ignored above 960px. */
+  readonly open?: boolean;
+  /** Called when user dismisses the drawer (backdrop, Escape, close button). */
+  readonly onClose?: () => void;
 }
 
-export function Sidebar({ workspaceName, workspacePlan }: SidebarProps) {
+export function Sidebar({
+  workspaceName,
+  workspacePlan,
+  open = false,
+  onClose,
+}: SidebarProps) {
   const pathname = usePathname();
 
   return (
-    <nav className={styles.sidebar} aria-label="Primary">
-      <Link href="/dashboard" className={styles.logo}>
-        <span className={styles.logoMark}>◆</span>
-        <span className={styles.logoText}>FormTrack</span>
-      </Link>
+    <>
+      <div
+        className={[styles.backdrop, open && styles.backdropOpen]
+          .filter(Boolean)
+          .join(" ")}
+        onClick={onClose}
+        aria-hidden
+      />
+      <nav
+        className={[styles.sidebar, open && styles.sidebarOpen]
+          .filter(Boolean)
+          .join(" ")}
+        aria-label="Primary"
+        aria-hidden={open ? undefined : undefined}
+      >
+        <div className={styles.topRow}>
+          <Link href="/dashboard" className={styles.logo}>
+            <span className={styles.logoMark}>◆</span>
+            <span className={styles.logoText}>FormTrack</span>
+          </Link>
+          <button
+            type="button"
+            className={styles.closeBtn}
+            onClick={onClose}
+            aria-label="Close menu"
+          >
+            <CloseIcon />
+          </button>
+        </div>
 
       <div className={styles.workspaceCard}>
         <div className={styles.workspaceIcon}>
@@ -66,7 +99,21 @@ export function Sidebar({ workspaceName, workspacePlan }: SidebarProps) {
           </li>
         ))}
       </ul>
-    </nav>
+      </nav>
+    </>
+  );
+}
+
+function CloseIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+      <path
+        d="m6 6 12 12M18 6 6 18"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+      />
+    </svg>
   );
 }
 

@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/shared/components/Button";
 
 import { logoutAction } from "@/features/auth/application/actions";
@@ -7,11 +9,30 @@ import styles from "./Topbar.module.scss";
 export interface TopbarProps {
   readonly userEmail: string | null;
   readonly workspaceName: string;
+  /** Called when the mobile hamburger is pressed. */
+  readonly onMenuClick?: () => void;
+  /** Whether the drawer is open — drives aria-expanded. */
+  readonly menuOpen?: boolean;
 }
 
-export function Topbar({ userEmail, workspaceName }: TopbarProps) {
+export function Topbar({
+  userEmail,
+  workspaceName,
+  onMenuClick,
+  menuOpen = false,
+}: TopbarProps) {
   return (
     <header className={styles.topbar}>
+      <button
+        type="button"
+        className={styles.menuBtn}
+        onClick={onMenuClick}
+        aria-label="Open navigation menu"
+        aria-expanded={menuOpen}
+        aria-controls="primary-navigation"
+      >
+        <MenuIcon />
+      </button>
       <div className={styles.search}>
         <SearchIcon />
         <input
@@ -22,7 +43,11 @@ export function Topbar({ userEmail, workspaceName }: TopbarProps) {
         <kbd className={styles.kbd}>⌘K</kbd>
       </div>
       <div className={styles.right}>
-        <button type="button" className={styles.iconBtn} aria-label="Notifications">
+        <button
+          type="button"
+          className={styles.iconBtn}
+          aria-label="Notifications"
+        >
           <BellIcon />
           <span className={styles.dot} />
         </button>
@@ -35,13 +60,26 @@ export function Topbar({ userEmail, workspaceName }: TopbarProps) {
             <span className={styles.userEmail}>{userEmail ?? "Guest"}</span>
           </div>
         </div>
-        <form action={logoutAction}>
+        <form action={logoutAction} className={styles.logoutForm}>
           <Button type="submit" variant="ghost" size="sm">
             Log out
           </Button>
         </form>
       </div>
     </header>
+  );
+}
+
+function MenuIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+      <path
+        d="M4 6h16M4 12h16M4 18h16"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+      />
+    </svg>
   );
 }
 
