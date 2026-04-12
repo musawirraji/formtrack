@@ -4,13 +4,14 @@
   gap: var(--s-8);
   max-width: 1280px;
   margin: 0 auto;
+  min-width: 0;
 }
 
 .header {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  gap: var(--s-6);
+  gap: var(--s-4);
   flex-wrap: wrap;
 }
 
@@ -23,7 +24,7 @@
 
 .title {
   font-family: var(--font-display);
-  font-size: 28px;
+  font-size: clamp(22px, 4vw, 28px);
   font-weight: 700;
   letter-spacing: -0.02em;
   color: var(--color-ink);
@@ -35,7 +36,7 @@
 }
 
 .empty {
-  padding: var(--s-10);
+  padding: var(--s-8);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -55,7 +56,7 @@
   font-size: 15px;
   line-height: 1.55;
   color: var(--color-ink-2);
-  max-width: 540px;
+  max-width: min(540px, 100%);
   margin: 0 0 var(--s-3) 0;
 }
 
@@ -64,27 +65,14 @@
   margin: 0;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr));
   gap: var(--s-5);
-}
-
-@media (max-width: 640px) {
-  .grid {
-    grid-template-columns: 1fr;
-  }
-
-  .title {
-    font-size: 22px;
-  }
-
-  .empty {
-    padding: var(--s-6);
-  }
 }
 
 .cardLink {
   text-decoration: none;
   display: block;
+  min-width: 0;
 
   &:hover .card {
     border-color: var(--color-accent-line);
@@ -99,6 +87,7 @@
   transition:
     border-color var(--motion),
     transform var(--motion);
+  min-width: 0;
 }
 
 .cardHead {
@@ -106,6 +95,7 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--s-3);
+  min-width: 0;
 }
 
 .cardTitle {
@@ -117,6 +107,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  min-width: 0;
 }
 
 .cardMeta {
@@ -125,6 +116,7 @@
   gap: var(--s-2);
   font-size: 12px;
   color: var(--color-ink-3);
+  flex-wrap: wrap;
 }
 
 .slug {
@@ -136,4 +128,18 @@
   border-radius: 6px;
   padding: 4px 8px;
   align-self: flex-start;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}
+
+@media (max-width: 480px) {
+  .wrap {
+    gap: var(--s-5);
+  }
+
+  .empty {
+    padding: var(--s-5);
+  }
 }

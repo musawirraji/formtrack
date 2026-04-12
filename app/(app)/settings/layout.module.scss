@@ -2,6 +2,7 @@
   display: grid;
   grid-template-columns: 200px 1fr;
   gap: var(--s-6);
+  min-width: 0;
 }
 
 .nav {
@@ -50,11 +51,11 @@
   min-width: 0;
 }
 
-// ─── Mobile: collapse to horizontal scroll tab bar ────────────
+// ─── Mobile ──────────────────────────────────────────────────
 @media (max-width: 760px) {
   .shell {
     grid-template-columns: 1fr;
-    gap: var(--s-5);
+    gap: var(--s-4);
   }
 
   .nav {
@@ -72,14 +73,18 @@
     -webkit-overflow-scrolling: touch;
     padding-bottom: var(--s-2);
     border-bottom: 1px solid var(--color-line);
-    scrollbar-width: thin;
+    // Hide scrollbar on mobile for cleaner look
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    &::-webkit-scrollbar { display: none; }
   }
 
   .navLink {
-    padding: 10px 14px;
+    padding: 8px 14px;
     border-radius: var(--radius-pill);
     background: var(--color-bg-inset);
     border: 1px solid var(--color-line);
     flex-shrink: 0;
+    font-size: 13px;
   }
 }

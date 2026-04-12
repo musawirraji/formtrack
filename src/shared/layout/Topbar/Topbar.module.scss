@@ -10,12 +10,14 @@
   top: 0;
   z-index: 5;
   backdrop-filter: blur(10px);
+  min-width: 0;
 }
 
 .menuBtn {
   display: none;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
   width: 40px;
   height: 40px;
   border-radius: var(--radius-sm);
@@ -34,8 +36,9 @@
 }
 
 .search {
-  flex: 1 1 auto;
+  flex: 1 1 0;
   max-width: 520px;
+  min-width: 0;
   display: flex;
   align-items: center;
   gap: var(--s-2);
@@ -48,7 +51,6 @@
   transition:
     border-color var(--motion),
     box-shadow var(--motion);
-  min-width: 0;
 
   &:focus-within {
     border-color: var(--color-accent-line);
@@ -57,7 +59,7 @@
 }
 
 .searchInput {
-  flex: 1 1 auto;
+  flex: 1 1 0;
   background: transparent;
   border: 0;
   outline: 0;
@@ -79,6 +81,7 @@
   background: var(--color-bg-elevated);
   border: 1px solid var(--color-line);
   color: var(--color-ink-3);
+  flex-shrink: 0;
 }
 
 .right {
@@ -86,6 +89,7 @@
   align-items: center;
   gap: var(--s-4);
   flex-shrink: 0;
+  min-width: 0;
 }
 
 .iconBtn {
@@ -100,6 +104,7 @@
   border: 1px solid var(--color-line);
   color: var(--color-ink-2);
   cursor: pointer;
+  flex-shrink: 0;
   transition:
     color var(--motion),
     border-color var(--motion);
@@ -125,12 +130,14 @@
   width: 1px;
   height: 28px;
   background: var(--color-line);
+  flex-shrink: 0;
 }
 
 .user {
   display: flex;
   align-items: center;
   gap: var(--s-3);
+  min-width: 0;
 }
 
 .avatar {
@@ -156,20 +163,21 @@
 .userEmail {
   font-size: 13px;
   color: var(--color-ink);
-  max-width: 160px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  min-width: 0;
 }
 
 .logoutForm {
   display: flex;
+  flex-shrink: 0;
 }
 
 // ─── Tablet ≤ 960px ──────────────────────────────────────────
 @media (max-width: 960px) {
   .topbar {
-    padding: var(--s-3) var(--s-5);
+    padding: var(--s-3) var(--s-4);
     gap: var(--s-3);
   }
 
@@ -177,7 +185,6 @@
     display: inline-flex;
   }
 
-  .iconBtn,
   .divider,
   .userMeta {
     display: none;
@@ -186,20 +193,26 @@
   .right {
     gap: var(--s-3);
   }
+
+  .kbd {
+    display: none;
+  }
 }
 
 // ─── Phone ≤ 640px ───────────────────────────────────────────
 @media (max-width: 640px) {
-  .search {
-    display: none;
+  .topbar {
+    padding: var(--s-3) var(--s-4);
+    gap: var(--s-3);
   }
 
+  .search,
+  .iconBtn,
   .logoutForm {
     display: none;
   }
 
   .topbar {
-    padding: var(--s-3) var(--s-4);
     justify-content: space-between;
   }
 }

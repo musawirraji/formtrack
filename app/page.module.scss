@@ -3,6 +3,11 @@
   display: flex;
   flex-direction: column;
   padding: $s-6;
+  overflow-x: hidden;
+
+  @media (max-width: 480px) {
+    padding: $s-4;
+  }
 }
 
 .nav {
@@ -61,6 +66,10 @@
   margin: auto;
   text-align: center;
   padding: $s-16 $s-4;
+
+  @media (max-width: 480px) {
+    padding: $s-10 $s-2;
+  }
 }
 
 .eyebrow {
