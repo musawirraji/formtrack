@@ -141,9 +141,24 @@ export async function signupWithPassword(
     };
   }
 
+  // Stamp workspace_id into the user's app_metadata so that
+  // current_workspace_id() (used by RLS policies) returns the
+  // correct value on the very first request after signup — before
+  // the access-token hook has had a chance to run.
+  await admin.auth.admin.updateUserById(data.user.id, {
+    app_metadata: { workspace_id: workspace.id },
+  });
+
   // If email confirmation is off (local dev), a session already exists.
-  // If it's on (production), data.session is null and the user needs to
-  // click the confirmation link — send them to a check-your-email page.
+  // Refresh it so the client picks up the new JWT that now includes
+  // the workspace_id claim we just wrote.
+  if (data.session) {
+    const freshClient = await createServerSupabase();
+    await freshClient.auth.refreshSession();
+  }
+
+  // If confirmation is required (production), data.session is null
+  // and the user needs to click the confirmation link first.
   if (!data.session) {
     redirect("/signup/verify");
   }
